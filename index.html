@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/styles.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="36x36" href="images/android-chrome-36x36.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="images/android-chrome-48x48.png">
+    <link rel="icon" type="image/png" sizes="72x72" href="images/android-chrome-72x72.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/android-chrome-96x96.png">
+    <link rel="icon" type="image/png" sizes="144x144" href="images/android-chrome-144x144.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="images/android-chrome-256x256.png">
+    <link rel="manifest" href="manifest.json">
+    <link rel="mask-icon" href="images/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+    <title>RadioToco PWA</title>
+</head>
+<body>
+
+<canvas id="example"></canvas>
+
+<button id="connect" type="button">Connect</button>
+
+<button id="disconnect" type="button">Disconnect</button>
+
+
+
+<form id="send-form">
+    <input id="input" type="text">
+    <button type="submit">Send</button>
+</form>
+
+<div id="terminal"></div>
+
+<script src="js/main.js"></script>
+<script src="companion.js" data-service-worker="sw.js"></script>
+
+</body>
+</html>
