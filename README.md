@@ -1,1 +1,1 @@
-A very simple PWA application with BLE, HTML, CSS for the radio sensor.
+A very simple PWA application with BLE, HTML, CSS for the radio sensor. The site works at https://sergeygusarov1977.github.io/BLE_Device_PWA. To work with a BLE device, you need to install PWA via Chrome.
