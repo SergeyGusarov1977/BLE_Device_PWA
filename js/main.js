@@ -220,7 +220,8 @@ function receive(data) {
   ctx.lineTo(i + grafZeroX + 1, grafZeroY - Math.round(grafZeroY*(tocoArr[i] - zeroToco)/maxToco*koefToco));
   ctx.stroke();
   i = i+1;
-  document.getElementById("toco").innerHTML = data;
+  //document.getElementById("toco").innerHTML = data;
+  outputToco.innerHTML = data;
   log(data, 'in');
 }
 
