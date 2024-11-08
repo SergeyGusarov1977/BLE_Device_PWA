@@ -18,9 +18,9 @@ const example = document.getElementById("example");
   var grafMaxX = example.width;
   var grafMaxY = 20;
 
-  let maxToco = 60;
-  let zeroToco = 800;
-  let koefToco = 0.05;
+  let maxToco = 240;
+  let zeroToco = 0;
+  let koefToco = 1;//0.05;
 
 /*  var gradient = ctx.createLinearGradient(0,  example.height-20, 0, 0);
   gradient.addColorStop(0.0, "springgreen");
