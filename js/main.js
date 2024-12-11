@@ -5,6 +5,7 @@ let terminalContainer = document.getElementById('terminal');
 let sendForm = document.getElementById('send-form');
 let inputField = document.getElementById('input');
 let outputToco = document.getElementById('toco');
+let zeroT = document.getElementById('zerotoco');
 
 const example = document.getElementById("example");
 //  if (example.getContext){
@@ -91,6 +92,13 @@ sendForm.addEventListener('submit', function(event) {
   send(inputField.value); // Отправить содержимое текстового поля
   inputField.value = '';  // Обнулить текстовое поле
   inputField.focus();     // Вернуть фокус на текстовое поле
+});
+
+//Обнуление датчика
+zeroT.addEventListener('click', function() {
+  let zeromessage = "$4;";
+  event.preventDefault();
+  send(zeromessage);
 });
 
 // Кэш объекта выбранного устройства
