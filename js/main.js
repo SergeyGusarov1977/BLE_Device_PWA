@@ -6,6 +6,11 @@ let sendForm = document.getElementById('send-form');
 let inputField = document.getElementById('input');
 let outputToco = document.getElementById('toco');
 let zeroT = document.getElementById('zerotoco');
+let batLev = document.getElementById('batlevel');
+
+let batteryLevelCharacteristic = null;
+let batteryService = null;
+let batteryLevel;
 
 const example = document.getElementById("example");
 //  if (example.getContext){
@@ -132,6 +137,7 @@ function requestBluetoothDevice() {
 
   return navigator.bluetooth.requestDevice({
     filters: [{services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']}],
+      optionalServices: ['battery_service', 'device_information']
   }).
       then(device => {
         log('"' +   device.name+'" bluetooth device selected');
@@ -163,26 +169,40 @@ function connectDeviceAndCacheCharacteristic(device) {
 
   log('Connecting to GATT server...');
 
-  return device.gatt.connect().
-      then(server => {
-        log('GATT server connected, getting service...');
+  const server = await device.gatt.connect();
 
-        return server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
-      }).
-      then(service => {
-        log('Service found, getting characteristic TX...');
+  log('GATT server connected, getting service...');
+	
+  batteryService = await server.getPrimaryService('battery_service');
 
-        bleServiceFound = service;
+  let service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
 
-        return service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
-      }).
-      then(characteristic => {
-        log('Characteristic found');
-        characteristicCacheTX = characteristic;
-	send('123');
-        return characteristicCacheTX;	
-      });
-   //send('123');
+  log('Service found, getting characteristic Battery...');
+
+  bleServiceFound = service;
+
+  batteryLevelCharacteristic = await batteryService.getCharacteristic('battery_level');
+
+  log('Service found, getting characteristic TX...');
+  let characteristic = await service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
+
+  try{
+	await batteryLevelCharacteristic.startNotifications();	
+	//batteryLevelCharacteristic.addEventListener('characteristicvaluechanged', handleBatteryLevelChanged);
+  } catch(error) {
+    		log('Argh! ' + error);
+  };	
+  log('Characteristic found');
+  characteristicCacheTX = characteristic;
+  send('123');
+  return characteristicCacheTX;
+}
+
+//Включение уведомлений об изменении характеристики battery_level
+function handleBatteryLevelChanged(event) {
+  batteryLevel = event.target.value.getUint8(0);
+  //log('>< Battery Level is ' + batteryLevel + '%');
+  //batLev.innerHTML = batteryLevel.getUint8(0) + '%';
 }
 
 // Включение получения уведомлений об изменении характеристики
@@ -231,6 +251,9 @@ function receive(data) {
   //document.getElementById("toco").innerHTML = data;
   outputToco.innerHTML = data;
   log(data, 'in');
+  batteryLevel = await batteryLevelCharacteristic.readValue();//читаем уровень заряда батареи
+  //log('> Battery Level is ' + batteryLevel.getUint8(0) + '%');
+  batLev.innerHTML = batteryLevel.getUint8(0) + '%'; //если есть эта строчка, то и уведомления об уровне заряда батареи работают
 }
 
 // Вывод в терминал
