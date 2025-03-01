@@ -162,7 +162,7 @@ function handleDisconnection(event) {
 }
 
 // Подключение к определенному устройству, получение сервиса и характеристики
-function connectDeviceAndCacheCharacteristic(device) {
+async function connectDeviceAndCacheCharacteristic(device) {
   if (device.gatt.connected && characteristicCacheTX) {
     return Promise.resolve(characteristicCacheTX);
   }
@@ -237,7 +237,7 @@ function handleCharacteristicValueChanged(event) {
 }
 
 // Обработка полученных данных
-function receive(data) {
+async function receive(data) {
   //log(data, 'in');
   tocoArr[i] = parseInt(data);
   ctx.strokeStyle = "#4F11B3";
