@@ -25,7 +25,6 @@
 }
 
 .battery-image {
-  width: 1%;
   width: 22; 
   height: 42;
   align: middle;
@@ -36,7 +35,6 @@
 }
 
 .toco-image {
-  width: 5%;
   width: 89; 
   height: 37;
   align: middle;
