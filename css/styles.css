@@ -9,3 +9,35 @@
 #terminal div.in {
     color: blue;
 }
+
+.layer {
+    overflow-x: scroll; /* Добавляем полосу прокрутки */
+    overflow-y: hidden;
+    /*width: 300px;*/ /* Ширина блока */
+    /*height: 150px;*/ /* Высота блока */
+    padding: 5px; /* Поля вокруг текста */
+    border: solid 1px black; /* Параметры рамки */
+    white-space: nowrap; /* Запрещаем перенос строк */
+}
+
+.battery-text {
+  font-size: 42px;
+}
+
+.battery-image {
+  width: 1%;
+  width: 22; 
+  height: 42;
+  align: middle;
+}
+
+.toco-text{
+  font-size: 42px;
+}
+
+.toco-image {
+  width: 5%;
+  width: 89; 
+  height: 37;
+  align: middle;
+}
