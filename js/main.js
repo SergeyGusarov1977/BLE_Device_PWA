@@ -121,7 +121,14 @@ let readBuffer = '';
 let tocoArr = [];
 //переменная для обращения к массиву
 let i = 0;
-
+//переменные для поиска пиков
+let tbegin = 0;
+let tend = 0;
+let maxAmlitude = 0;
+let tmax = 0;
+let tevent = false;
+let eventDuration = 0;
+let pikFound = false;
 // Запустить выбор Bluetooth устройства и подключиться к выбранному
 function connect() {
   return (deviceCache ? Promise.resolve(deviceCache) :
@@ -240,12 +247,26 @@ function handleCharacteristicValueChanged(event) {
 async function receive(data) {
   //log(data, 'in');
   tocoArr[i] = parseInt(data);
+	
+  TestPik();
+	
   ctx.strokeStyle = "#4F11B3";
   ctx.fillStyle = "#4FBBB3";
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(i + grafZeroX, grafZeroY - Math.round(grafZeroY*(tocoArr[i-1] - zeroToco)/maxToco*koefToco));
   ctx.lineTo(i + grafZeroX + 1, grafZeroY - Math.round(grafZeroY*(tocoArr[i] - zeroToco)/maxToco*koefToco));
+
+  if (pikFound) {
+    ctx.strokeStyle = "#4F11B3";
+    ctx.fillStyle = "#4FBBB3";
+    ctx.lineWidth = 1;
+    ctx.moveTo(tmax + grafZeroX-5, grafZeroY - Math.round(grafZeroY*(225 - zeroToco)/maxToco*koefToco));
+    ctx.lineTo(tmax + grafZeroX, grafZeroY - Math.round(grafZeroY*(220 - zeroToco)/maxToco*koefToco));
+    ctx.lineTo(tmax + grafZeroX+5, grafZeroY - Math.round(grafZeroY*(225 - zeroToco)/maxToco*koefToco));
+    pikFound = false;
+  }
+	
   ctx.stroke();
   i = i+1;
   //document.getElementById("toco").innerHTML = data;
