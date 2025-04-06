@@ -371,3 +371,29 @@ function send(data) {
 function writeToCharacteristic(characteristic, data) {
   characteristic.writeValue(new TextEncoder().encode(data));
 }
+
+//поиск пиков
+function TestPik() {
+  if (tevent == false){
+    if (tocoArr[i] > progZero) {
+      tevent = true;
+      tbegin = i;
+      maxAmplitude = tocoArr[i];
+      tmax = i;
+    }
+  } 
+  else {
+    if (tocoArr[i] > tocoArr[i-1]) {
+      maxAmplitude = tocoArr[i];
+      tmax = i;
+    }
+    if (tocoArr[i] <= progZero) {
+      tend = i;
+      tevent = false;
+      eventDuration = tend - tbegin;
+      if ((eventDuration >=3) && (eventDuration <= 10) && (maxAmplitude >= 8) && (maxAmplitude <= 45)) {
+         pikFound = true;
+      }
+    }
+  }
+} 
