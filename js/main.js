@@ -7,6 +7,10 @@ let inputField = document.getElementById('input');
 let outputToco = document.getElementById('toco');
 let zeroT = document.getElementById('zerotoco');
 let batLev = document.getElementById('batlevel');
+let researchTimer = document.getElementById('research');
+let sbrosresearch = document.getElementById('sbros');
+let totalpeaks = document.getElementById('total_peaks');
+let hourpeaks = document.getElementById('hour_peaks');
 
 let batteryLevelCharacteristic = null;
 let batteryService = null;
@@ -129,6 +133,45 @@ let tmax = 0;
 let tevent = false;
 let eventDuration = 0;
 let pikFound = false;
+//частота опроса датчика 1 Гц
+let freq = 1;
+let tpeaks = 0;
+let hpeaks = 0;
+let hoursec = 0;
+
+//let researchTimer = document.getElementById('research');
+let bresearch = 0;
+let resTimer;
+let res_hour = 0;
+let res_min = 0;
+let res_sec = 0;
+let time_message = "";
+
+researchTimer.addEventListener('click', function() {  
+  if (bresearch == 0) {
+     bresearch = 1;
+     researchTimer.innerHTML = 'Stop';
+     //researchWatch();
+  }
+  else {
+     bresearch = 0;
+     researchTimer.innerHTML = 'Start';
+     //researchWatch();
+  }
+  researchWatch();
+});
+
+sbrosresearch.addEventListener('click', function() {
+   res_hour = 0;
+   res_min = 0;
+   res_sec = 0;
+   tpeaks = 0;
+   hpeaks = 0;
+   totalpeaks.innerHTML = tpeaks;
+   hourpeaks.innerHTML = hpeaks;
+   document.getElementById('research_watch').innerHTML = '00:00:00';
+});
+
 // Запустить выбор Bluetooth устройства и подключиться к выбранному
 function connect() {
   return (deviceCache ? Promise.resolve(deviceCache) :
@@ -396,4 +439,45 @@ function TestPik() {
       }
     }
   }
-} 
+}
+
+function researchWatch() {
+  time_message = '';
+  if (bresearch == 1) {
+     //researchTimer.innerHTML = 'Start';
+     if (res_hour < 10) {time_message = '0' + String(res_hour) + ":";}
+     else {time_message = String(res_hour) + ":";}
+     if (res_min < 10) {time_message += '0' + String(res_min) + ":";}
+     else {time_message += String(res_min) + ":";}
+     if (res_sec < 10) {time_message += '0' + String(res_sec);}
+     else {time_message += String(res_sec);}
+     //time_message = String.fromCharCode(res_hour) + ":" + String.fromCharCode(res_min) + ":" + String.fromCharCode(res_sec);
+     //time_message = (res_hour).toString()[0] + ":" + (res_min).toString()[0] + ":" + (res_sec).toString()[0];
+     //time_message = String(res_hour) + ":" + String(res_min) + ":" + String(res_sec);
+     document.getElementById('research_watch').innerHTML = time_message;//'0' + String(res_sec);     
+     if (res_sec < 59) 
+     {
+          res_sec += 1; 
+          if (hoursec < 3599) {hoursec +=1;}
+          else {hoursec = 0; hpeaks = 0;}
+     }
+     else 
+     {
+        res_sec = 0;
+        if (res_min < 59) {res_min += 1;}
+        else 
+        {
+           res_min = 0;
+           if (res_hour < 23) {res_hour += 1;}
+           else 
+           {
+              res_hour = 0;
+           }
+        }
+     }
+     resTimer = setTimeout(researchWatch, 1000);
+  }
+  else {
+     clearTimeout(resTimer);
+  }
+}
