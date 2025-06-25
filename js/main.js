@@ -11,10 +11,17 @@ let researchTimer = document.getElementById('research');
 let sbrosresearch = document.getElementById('sbros');
 let totalpeaks = document.getElementById('total_peaks');
 let hourpeaks = document.getElementById('hour_peaks');
+let websockip = document.getElementById('wsip');
+let websockinputip = document.getElementById('wsinputip');
+let websockconnect = document.getElementById('wsconnect');
 
 let batteryLevelCharacteristic = null;
 let batteryService = null;
 let batteryLevel;
+
+const socket = new WebSocket('ws://192.168.1.66:1234');
+let wsconnected = false;
+let wsmessage = "";
 
 const example = document.getElementById("example");
 //  if (example.getContext){
@@ -318,6 +325,15 @@ async function receive(data) {
   batteryLevel = await batteryLevelCharacteristic.readValue();//читаем уровень заряда батареи
   //log('> Battery Level is ' + batteryLevel.getUint8(0) + '%');
   batLev.innerHTML = batteryLevel.getUint8(0) + '%'; //если есть эта строчка, то и уведомления об уровне заряда батареи работают
+
+  if (wsconnected == true) {
+	wsmessage = '{' + '\"Toco\"' + ':' + '\"' + data + '\"'+ '}';
+	socket.send(wsmessage);
+	wsmessage = '{' + '\"TotalPeaks\"' + ':' + '\"' + tpeaks + '\"'+ '}';
+	socket.send(wsmessage);
+	wsmessage = '{' + '\"HourPeaks\"' + ':' + '\"' + hpeaks + '\"'+ '}';
+	socket.send(wsmessage);
+  }
 }
 
 // Вывод в терминал
@@ -481,3 +497,44 @@ function researchWatch() {
      clearTimeout(resTimer);
   }
 }
+
+socket.onopen = () => {
+      //console.log('Соединение установлено');
+      log('Соединение установлено');
+      wsconnected = true;
+};
+
+socket.onmessage = (event) => {
+      const messagesDiv = document.getElementById('terminal');
+      const newMessage = document.createElement('div');
+      newMessage.textContent = `Сервер: ${event.data}`;
+      messagesDiv.appendChild(newMessage);
+};
+
+socket.onclose = () => {
+      //console.log('Соединение закрыто');
+      //log('Соединение закрыто');
+	if (event.wasClean) {
+        	log('Соединение закрыто чисто');
+    	} else {
+        	log('Обрыв соединения'); // например, "убит" процесс сервера
+    	}
+    	log('Код: ' + event.code + ' причина: ' + event.reason);
+        wsconnected = false;
+};
+
+//const sendButton = document.getElementById('sendButton');
+websockconnect.addEventListener('click', () => {
+	//const messageInput = document.getElementById('messageInput');
+	//const ipmessage = 'ws://' + websockinputip.value + ':1234';
+	//const socket = new WebSocket(ipmessage);
+	const ipmessage = websockinputip.value;
+	socket.send(ipmessage);
+
+	const messagesDiv = document.getElementById('terminal');
+	const newMessage = document.createElement('div');
+	newMessage.textContent = `Вы: ${ipmessage}`;
+	messagesDiv.appendChild(newMessage);
+
+	websockinputip.value.value = '';
+});
