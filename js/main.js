@@ -20,7 +20,7 @@ let batteryLevelCharacteristic = null;
 let batteryService = null;
 let batteryLevel;
 
-//const socket = new WebSocket('ws://192.168.1.66:1234');
+const socket = new WebSocket('ws://192.168.1.66:1234');
 let wsconnected = false;
 let wsmessage = "";
 
