@@ -47,7 +47,7 @@ socket.onclose = () => {
     	}
     	log('Код: ' + event.code + ' причина: ' + event.reason);
         wsconnected = false;
-};*/
+};
 
 websockconnect.addEventListener('click', () => {
 	//const messageInput = document.getElementById('messageInput');
@@ -62,7 +62,7 @@ websockconnect.addEventListener('click', () => {
 	messagesDiv.appendChild(newMessage);
 
 	websockinputip.value.value = '';
-});
+});*/
 
 const example = document.getElementById("example");
 //  if (example.getContext){
