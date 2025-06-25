@@ -7,6 +7,7 @@ let inputField = document.getElementById('input');
 let outputToco = document.getElementById('toco');
 let zeroT = document.getElementById('zerotoco');
 let batLev = document.getElementById('batlevel');
+//let beginresearch = document.getElementById('begres');
 let researchTimer = document.getElementById('research');
 let sbrosresearch = document.getElementById('sbros');
 let totalpeaks = document.getElementById('total_peaks');
@@ -38,6 +39,7 @@ const example = document.getElementById("example");
   let maxToco = 240;
   let zeroToco = 0;
   let koefToco = 1;//0.05;
+  let progZero = 1;//zeroT + 1;
 
 /*  var gradient = ctx.createLinearGradient(0,  example.height-20, 0, 0);
   gradient.addColorStop(0.0, "springgreen");
@@ -193,6 +195,7 @@ function requestBluetoothDevice() {
   log('Requesting bluetooth device...');
 
   return navigator.bluetooth.requestDevice({
+    //filters: [{services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']}],
     filters: [{services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e']}],
       optionalServices: ['battery_service', 'device_information']
   }).
@@ -228,31 +231,40 @@ async function connectDeviceAndCacheCharacteristic(device) {
 
   const server = await device.gatt.connect();
 
-  log('GATT server connected, getting service...');
+        log('GATT server connected, getting service...');
 	
-  batteryService = await server.getPrimaryService('battery_service');
+	batteryService = await server.getPrimaryService('battery_service');
 
-  let service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
+        let service = await server.getPrimaryService('6e400001-b5a3-f393-e0a9-e50e24dcca9e');
 
-  log('Service found, getting characteristic Battery...');
+        log('Service found, getting characteristic Battery...');
 
-  bleServiceFound = service;
+        bleServiceFound = service;
 
-  batteryLevelCharacteristic = await batteryService.getCharacteristic('battery_level');
+	batteryLevelCharacteristic = await batteryService.getCharacteristic('battery_level');
 
-  log('Service found, getting characteristic TX...');
-  let characteristic = await service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
+	log('Service found, getting characteristic TX...');
+        let characteristic = await service.getCharacteristic('6e400003-b5a3-f393-e0a9-e50e24dcca9e');
 
-  try{
+	try{
 	await batteryLevelCharacteristic.startNotifications();	
+	/*batteryLevelCharacteristic.addEventListener('characteristicvaluechanged', e => {
+		const value = e.target.value.getUint8(0);
+		log('> Bat Level is ' + value + '%');
+	});*/
 	//batteryLevelCharacteristic.addEventListener('characteristicvaluechanged', handleBatteryLevelChanged);
-  } catch(error) {
+	//await batteryLevelCharacteristic.startNotifications();
+	} catch(error) {
     		log('Argh! ' + error);
-  };	
-  log('Characteristic found');
-  characteristicCacheTX = characteristic;
-  send('123');
-  return characteristicCacheTX;
+  	};
+	//batteryLevel = await batteryLevelCharacteristic.readValue();
+  	//log('> Battery Level is ' + batteryLevel.getUint8(0) + '%');
+        log('Characteristic found');
+        characteristicCacheTX = characteristic;
+	send('123');
+        return characteristicCacheTX;	
+
+   //send('123');
 }
 
 //Включение уведомлений об изменении характеристики battery_level
@@ -297,15 +309,15 @@ function handleCharacteristicValueChanged(event) {
 async function receive(data) {
   //log(data, 'in');
   tocoArr[i] = parseInt(data);
-	
+
   TestPik();
-	
+
   ctx.strokeStyle = "#4F11B3";
   ctx.fillStyle = "#4FBBB3";
   ctx.lineWidth = 1;
   ctx.beginPath();
-  ctx.moveTo(i + grafZeroX, grafZeroY - Math.round(grafZeroY*(tocoArr[i-1] - zeroToco)/maxToco*koefToco));
-  ctx.lineTo(i + grafZeroX + 1, grafZeroY - Math.round(grafZeroY*(tocoArr[i] - zeroToco)/maxToco*koefToco));
+  ctx.moveTo(i + grafZeroX, grafZeroY - Math.round(grafZeroY*(tocoArr[i-1] - zeroToco + 5)/maxToco*koefToco));
+  ctx.lineTo(i + grafZeroX + 1, grafZeroY - Math.round(grafZeroY*(tocoArr[i] - zeroToco + 5)/maxToco*koefToco));
 
   if (pikFound) {
     ctx.strokeStyle = "#4F11B3";
@@ -316,12 +328,13 @@ async function receive(data) {
     ctx.lineTo(tmax + grafZeroX+5, grafZeroY - Math.round(grafZeroY*(225 - zeroToco)/maxToco*koefToco));
     pikFound = false;
   }
-	
+
   ctx.stroke();
   i = i+1;
   //document.getElementById("toco").innerHTML = data;
   outputToco.innerHTML = data;
   log(data, 'in');
+
   batteryLevel = await batteryLevelCharacteristic.readValue();//читаем уровень заряда батареи
   //log('> Battery Level is ' + batteryLevel.getUint8(0) + '%');
   batLev.innerHTML = batteryLevel.getUint8(0) + '%'; //если есть эта строчка, то и уведомления об уровне заряда батареи работают
@@ -449,13 +462,17 @@ function TestPik() {
     if (tocoArr[i] <= progZero) {
       tend = i;
       tevent = false;
-      eventDuration = tend - tbegin;
+      eventDuration = (tend - tbegin)/freq;
       if ((eventDuration >=3) && (eventDuration <= 10) && (maxAmplitude >= 8) && (maxAmplitude <= 45)) {
          pikFound = true;
+         tpeaks += 1;
+         hpeaks += 1;
+         totalpeaks.innerHTML = tpeaks;
+         hourpeaks.innerHTML = hpeaks;
       }
     }
   }
-}
+} 
 
 function researchWatch() {
   time_message = '';
@@ -496,6 +513,7 @@ function researchWatch() {
   else {
      clearTimeout(resTimer);
   }
+
 }
 
 socket.onopen = () => {
