@@ -20,7 +20,7 @@ let batteryLevelCharacteristic = null;
 let batteryService = null;
 let batteryLevel;
 
-const socket = new WebSocket('ws://192.168.1.66:1234');
+/*const socket = new WebSocket('ws://192.168.1.66:1234');
 let wsconnected = false;
 let wsmessage = "";
 
@@ -47,9 +47,8 @@ socket.onclose = () => {
     	}
     	log('Код: ' + event.code + ' причина: ' + event.reason);
         wsconnected = false;
-};
+};*/
 
-//const sendButton = document.getElementById('sendButton');
 websockconnect.addEventListener('click', () => {
 	//const messageInput = document.getElementById('messageInput');
 	//const ipmessage = 'ws://' + websockinputip.value + ':1234';
