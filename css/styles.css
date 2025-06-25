@@ -18,7 +18,7 @@
     padding: 5px; /* Поля вокруг текста */
     border: solid 1px black; /* Параметры рамки */
     white-space: nowrap; /* Запрещаем перенос строк */
-}
+   } 
 
 .battery-text {
   font-size: 42px;
@@ -34,11 +34,6 @@
   font-size: 42px;
 }
 
-.toco-image {
-  width: 89; 
-  height: 37;
-  align: middle;
-}
 .total-image {
   width: 89; 
   height: 37;
